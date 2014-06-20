@@ -15,8 +15,8 @@
   
 ==============================================================================*/  
 
-// PivotCalibration Logic includes
-#include "vtkSlicerPivotCalibrationLogic.h"
+// ImagelessProbeCalibration Logic includes
+#include "vtkSlicerImagelessProbeCalibrationLogic.h"
 
 // MRML includes
 #include <vtkMRMLLinearTransformNode.h>
@@ -44,10 +44,10 @@
 
 
 //----------------------------------------------------------------------------
-vtkStandardNewMacro(vtkSlicerPivotCalibrationLogic);
+vtkStandardNewMacro(vtkSlicerImagelessProbeCalibrationLogic);
 
 //----------------------------------------------------------------------------
-vtkSlicerPivotCalibrationLogic::vtkSlicerPivotCalibrationLogic()
+vtkSlicerImagelessProbeCalibrationLogic::vtkSlicerImagelessProbeCalibrationLogic()
 {
   this->RecordingState = false;
 
@@ -64,19 +64,19 @@ vtkSlicerPivotCalibrationLogic::vtkSlicerPivotCalibrationLogic()
 }
 
 //----------------------------------------------------------------------------
-vtkSlicerPivotCalibrationLogic::~vtkSlicerPivotCalibrationLogic()
+vtkSlicerImagelessProbeCalibrationLogic::~vtkSlicerImagelessProbeCalibrationLogic()
 {
   this->ClearSamples();
 }
 
 //----------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic::PrintSelf(ostream& os, vtkIndent indent)
+void vtkSlicerImagelessProbeCalibrationLogic::PrintSelf(ostream& os, vtkIndent indent)
 {
   this->Superclass::PrintSelf( os, indent );
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic::SetMRMLSceneInternal(vtkMRMLScene * newScene)
+void vtkSlicerImagelessProbeCalibrationLogic::SetMRMLSceneInternal(vtkMRMLScene * newScene)
 {
   vtkNew<vtkIntArray> events;
   events->InsertNextValue(vtkMRMLScene::NodeAddedEvent);
@@ -88,7 +88,7 @@ void vtkSlicerPivotCalibrationLogic::SetMRMLSceneInternal(vtkMRMLScene * newScen
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic::ProcessMRMLNodesEvents(vtkObject* caller, unsigned long event, void* callData)
+void vtkSlicerImagelessProbeCalibrationLogic::ProcessMRMLNodesEvents(vtkObject* caller, unsigned long event, void* callData)
 {
   if (caller != NULL)
   {
@@ -111,7 +111,7 @@ void vtkSlicerPivotCalibrationLogic::ProcessMRMLNodesEvents(vtkObject* caller, u
 
 
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic::ObserveTransformNode(vtkMRMLNode* node)
+void vtkSlicerImagelessProbeCalibrationLogic::ObserveTransformNode(vtkMRMLNode* node)
 {
   if (node != NULL)
   {
@@ -122,13 +122,13 @@ void vtkSlicerPivotCalibrationLogic::ObserveTransformNode(vtkMRMLNode* node)
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic::AddSample(vtkMatrix4x4* transformMatrix)
+void vtkSlicerImagelessProbeCalibrationLogic::AddSample(vtkMatrix4x4* transformMatrix)
 {
   this->CollectedTransforms.push_back( transformMatrix );
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic::ClearSamples()
+void vtkSlicerImagelessProbeCalibrationLogic::ClearSamples()
 {
   std::vector< vtkMatrix4x4* >::const_iterator it;
   for( it = this->CollectedTransforms.begin(); it != this->CollectedTransforms.end(); it++)
@@ -139,7 +139,7 @@ void vtkSlicerPivotCalibrationLogic::ClearSamples()
 }
 
 //---------------------------------------------------------------------------
-double vtkSlicerPivotCalibrationLogic::ComputePivotPoint( vnl_vector< double >* pivot )
+double vtkSlicerImagelessProbeCalibrationLogic::ComputePivotPoint( vnl_vector< double >* pivot )
 {
   if (this->CollectedTransforms.size() == 0)
   {
@@ -219,7 +219,7 @@ double vtkSlicerPivotCalibrationLogic::ComputePivotPoint( vnl_vector< double >* 
 
 //---------------------------------------------------------------------------
 // Return true if the calibration is complete and ImageToProbe transform is available (otherwise return false)
-double vtkSlicerPivotCalibrationLogic::AddPivot( PivotEnumeration pivot )
+double vtkSlicerImagelessProbeCalibrationLogic::AddPivot( PivotEnumeration pivot )
 {
   if ( pivot == this->UNMARKED_PIVOT_B )
   {
@@ -246,7 +246,7 @@ double vtkSlicerPivotCalibrationLogic::AddPivot( PivotEnumeration pivot )
 
 //---------------------------------------------------------------------------
 // Return true if the calibration is complete and ImageToProbe transform is available (otherwise return false)
-void vtkSlicerPivotCalibrationLogic::ComputeImageToProbeTransform()
+void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
 {
   // First, find the image plane
   vnl_vector<double> imagePlaneNormal( 3 );
@@ -311,7 +311,7 @@ void vtkSlicerPivotCalibrationLogic::ComputeImageToProbeTransform()
 
 
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic::ComputeImagePlaneNormal( vnl_vector< double >* normal )
+void vtkSlicerImagelessProbeCalibrationLogic::ComputeImagePlaneNormal( vnl_vector< double >* normal )
 {
   normal->put( 0, ( ( this->MarkedPivotA.get( 0 ) - this->MarkedPivotB.get( 0 ) ) + ( this->UnmarkedPivotA.get( 0 ) - this->UnmarkedPivotB.get( 0 ) ) ) / 2 );
   normal->put( 1, ( ( this->MarkedPivotA.get( 1 ) - this->MarkedPivotB.get( 1 ) ) + ( this->UnmarkedPivotA.get( 1 ) - this->UnmarkedPivotB.get( 1 ) ) ) / 2 );
@@ -321,7 +321,7 @@ void vtkSlicerPivotCalibrationLogic::ComputeImagePlaneNormal( vnl_vector< double
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic::GetImageToProbeTransform( vtkMRMLNode* outputNode )
+void vtkSlicerImagelessProbeCalibrationLogic::GetImageToProbeTransform( vtkMRMLNode* outputNode )
 {
   vtkMRMLLinearTransformNode* outputTransform = vtkMRMLLinearTransformNode::SafeDownCast( outputNode );
   if ( outputTransform == NULL )
@@ -339,13 +339,13 @@ void vtkSlicerPivotCalibrationLogic::GetImageToProbeTransform( vtkMRMLNode* outp
 
 /*
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic
+void vtkSlicerImagelessProbeCalibrationLogic
 ::OnMRMLSceneNodeAdded(vtkMRMLNode* vtkNotUsed(node))
 {
 }
 
 //---------------------------------------------------------------------------
-void vtkSlicerPivotCalibrationLogic
+void vtkSlicerImagelessProbeCalibrationLogic
 ::OnMRMLSceneNodeRemoved(vtkMRMLNode* vtkNotUsed(node))
 {
 }

@@ -15,18 +15,18 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerPivotCalibrationModule_h
-#define __qSlicerPivotCalibrationModule_h
+#ifndef __qSlicerImagelessProbeCalibrationModule_h
+#define __qSlicerImagelessProbeCalibrationModule_h
 
 // SlicerQt includes
 #include "qSlicerLoadableModule.h"
 
-#include "qSlicerPivotCalibrationModuleExport.h"
+#include "qSlicerImagelessProbeCalibrationModuleExport.h"
 
-class qSlicerPivotCalibrationModulePrivate;
+class qSlicerImagelessProbeCalibrationModulePrivate;
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class Q_SLICER_QTMODULES_PIVOTCALIBRATION_EXPORT qSlicerPivotCalibrationModule :
+class Q_SLICER_QTMODULES_IMAGELESSPROBECALIBRATION_EXPORT qSlicerImagelessProbeCalibrationModule :
   public qSlicerLoadableModule
 {
   Q_OBJECT
@@ -35,8 +35,8 @@ class Q_SLICER_QTMODULES_PIVOTCALIBRATION_EXPORT qSlicerPivotCalibrationModule :
 public:
 
   typedef qSlicerLoadableModule Superclass;
-  explicit qSlicerPivotCalibrationModule(QObject *parent=0);
-  virtual ~qSlicerPivotCalibrationModule();
+  explicit qSlicerImagelessProbeCalibrationModule(QObject *parent=0);
+  virtual ~qSlicerImagelessProbeCalibrationModule();
 
   qSlicerGetTitleMacro(QTMODULE_TITLE);
 
@@ -62,11 +62,11 @@ protected:
   virtual vtkMRMLAbstractLogic* createLogic();
 
 protected:
-  QScopedPointer<qSlicerPivotCalibrationModulePrivate> d_ptr;
+  QScopedPointer<qSlicerImagelessProbeCalibrationModulePrivate> d_ptr;
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerPivotCalibrationModule);
-  Q_DISABLE_COPY(qSlicerPivotCalibrationModule);
+  Q_DECLARE_PRIVATE(qSlicerImagelessProbeCalibrationModule);
+  Q_DISABLE_COPY(qSlicerImagelessProbeCalibrationModule);
 
 };
 

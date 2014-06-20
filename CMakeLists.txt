@@ -2,8 +2,8 @@
 cmake_minimum_required(VERSION 2.8.7)
 
 #-----------------------------------------------------------------------------
-set(MODULE_NAME PivotCalibration)
-set(MODULE_TITLE "Pivot Calibration")
+set(MODULE_NAME ImagelessProbeCalibration)
+set(MODULE_TITLE "Imageless Probe Calibration")
 
 string(TOUPPER ${MODULE_NAME} MODULE_NAME_UPPER)
 

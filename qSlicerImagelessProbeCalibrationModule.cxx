@@ -19,98 +19,98 @@
 #include <QtPlugin>
 
 // ExtensionTemplate Logic includes
-#include <vtkSlicerPivotCalibrationLogic.h>
+#include <vtkSlicerImagelessProbeCalibrationLogic.h>
 
 // ExtensionTemplate includes
-#include "qSlicerPivotCalibrationModule.h"
-#include "qSlicerPivotCalibrationModuleWidget.h"
+#include "qSlicerImagelessProbeCalibrationModule.h"
+#include "qSlicerImagelessProbeCalibrationModuleWidget.h"
 
 //-----------------------------------------------------------------------------
-Q_EXPORT_PLUGIN2(qSlicerPivotCalibrationModule, qSlicerPivotCalibrationModule);
+Q_EXPORT_PLUGIN2(qSlicerImagelessProbeCalibrationModule, qSlicerImagelessProbeCalibrationModule);
 
 //-----------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class qSlicerPivotCalibrationModulePrivate
+class qSlicerImagelessProbeCalibrationModulePrivate
 {
 public:
-  qSlicerPivotCalibrationModulePrivate();
+  qSlicerImagelessProbeCalibrationModulePrivate();
 };
 
 //-----------------------------------------------------------------------------
-// qSlicerPivotCalibrationModulePrivate methods
+// qSlicerImagelessProbeCalibrationModulePrivate methods
 
 //-----------------------------------------------------------------------------
-qSlicerPivotCalibrationModulePrivate::qSlicerPivotCalibrationModulePrivate()
+qSlicerImagelessProbeCalibrationModulePrivate::qSlicerImagelessProbeCalibrationModulePrivate()
 {
 }
 
 //-----------------------------------------------------------------------------
-// qSlicerPivotCalibrationModule methods
+// qSlicerImagelessProbeCalibrationModule methods
 
 //-----------------------------------------------------------------------------
-qSlicerPivotCalibrationModule::qSlicerPivotCalibrationModule(QObject* _parent)
+qSlicerImagelessProbeCalibrationModule::qSlicerImagelessProbeCalibrationModule(QObject* _parent)
   : Superclass(_parent)
-  , d_ptr(new qSlicerPivotCalibrationModulePrivate)
+  , d_ptr(new qSlicerImagelessProbeCalibrationModulePrivate)
 {
 }
 
 //-----------------------------------------------------------------------------
-qSlicerPivotCalibrationModule::~qSlicerPivotCalibrationModule()
+qSlicerImagelessProbeCalibrationModule::~qSlicerImagelessProbeCalibrationModule()
 {
 }
 
 //-----------------------------------------------------------------------------
-QString qSlicerPivotCalibrationModule::helpText()const
+QString qSlicerImagelessProbeCalibrationModule::helpText()const
 {
   return "For help on how to use this module visit: <a href='https://www.assembla.com/spaces/slicerigt'>SlicerIGT</a>";
 }
 
 //-----------------------------------------------------------------------------
-QString qSlicerPivotCalibrationModule::acknowledgementText()const
+QString qSlicerImagelessProbeCalibrationModule::acknowledgementText()const
 {
   return "This work was was funded by Cancer Care Ontario and the Ontario Consortium for Adaptive Interventions in Radiation Oncology (OCAIRO)";
 }
 
 //-----------------------------------------------------------------------------
-QStringList qSlicerPivotCalibrationModule::contributors()const
+QStringList qSlicerImagelessProbeCalibrationModule::contributors()const
 {
   QStringList moduleContributors;
-  moduleContributors << QString( "Franklin King (Queen's University), Tamas Ungi (Queen's University)" );
+  moduleContributors << QString( "Matthew S. Holden (Queen's University), Tamas Ungi (Queen's University)" );
   return moduleContributors;
 }
 
 //-----------------------------------------------------------------------------
-QIcon qSlicerPivotCalibrationModule::icon()const
+QIcon qSlicerImagelessProbeCalibrationModule::icon()const
 {
-  return QIcon(":/Icons/PivotCalibration.png");
+  return QIcon(":/Icons/ImagelessProbeCalibration.png");
 }
 
 //-----------------------------------------------------------------------------
-QStringList qSlicerPivotCalibrationModule::categories() const
+QStringList qSlicerImagelessProbeCalibrationModule::categories() const
 {
   return QStringList() << "IGT";
 }
 
 //-----------------------------------------------------------------------------
-QStringList qSlicerPivotCalibrationModule::dependencies() const
+QStringList qSlicerImagelessProbeCalibrationModule::dependencies() const
 {
   return QStringList();
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModule::setup()
+void qSlicerImagelessProbeCalibrationModule::setup()
 {
   this->Superclass::setup();
 }
 
 //-----------------------------------------------------------------------------
-qSlicerAbstractModuleRepresentation * qSlicerPivotCalibrationModule::createWidgetRepresentation()
+qSlicerAbstractModuleRepresentation * qSlicerImagelessProbeCalibrationModule::createWidgetRepresentation()
 {
-  return new qSlicerPivotCalibrationModuleWidget;
+  return new qSlicerImagelessProbeCalibrationModuleWidget;
 }
 
 //-----------------------------------------------------------------------------
-vtkMRMLAbstractLogic* qSlicerPivotCalibrationModule::createLogic()
+vtkMRMLAbstractLogic* qSlicerImagelessProbeCalibrationModule::createLogic()
 {
-  return vtkSlicerPivotCalibrationLogic::New();
+  return vtkSlicerImagelessProbeCalibrationLogic::New();
 }

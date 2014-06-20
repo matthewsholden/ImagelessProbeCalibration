@@ -15,10 +15,10 @@
 
 ==============================================================================*/
 
-// .NAME vtkSlicerPivotCalibrationLogic
+// .NAME vtkSlicerImagelessProbeCalibrationLogic
 // .SECTION Description
-#ifndef __vtkSlicerPivotCalibrationLogic_h
-#define __vtkSlicerPivotCalibrationLogic_h
+#ifndef __vtkSlicerImagelessProbeCalibrationLogic_h
+#define __vtkSlicerImagelessProbeCalibrationLogic_h
 
 // Slicer includes
 #include "vtkSlicerModuleLogic.h"
@@ -38,19 +38,19 @@
 #include "vnl/vnl_matrix.h"
 #include "vnl/vnl_vector.h"
 
-#include "vtkSlicerPivotCalibrationModuleLogicExport.h"
+#include "vtkSlicerImagelessProbeCalibrationModuleLogicExport.h"
 
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class VTK_SLICER_PIVOTCALIBRATION_MODULE_LOGIC_EXPORT vtkSlicerPivotCalibrationLogic :
+class VTK_SLICER_IMAGELESSPROBECALIBRATION_MODULE_LOGIC_EXPORT vtkSlicerImagelessProbeCalibrationLogic :
   public vtkSlicerModuleLogic
 {
 public:
 
   enum PivotEnumeration { NO_PIVOT, MARKED_PIVOT_A, MARKED_PIVOT_B, UNMARKED_PIVOT_A, UNMARKED_PIVOT_B };
 
-  static vtkSlicerPivotCalibrationLogic *New();
-  vtkTypeMacro(vtkSlicerPivotCalibrationLogic, vtkSlicerModuleLogic);
+  static vtkSlicerImagelessProbeCalibrationLogic *New();
+  vtkTypeMacro(vtkSlicerImagelessProbeCalibrationLogic, vtkSlicerModuleLogic);
   void PrintSelf(ostream& os, vtkIndent indent);
   
   void ObserveTransformNode( vtkMRMLNode* transformNode );
@@ -82,8 +82,8 @@ public:
 
   
 protected:
-  vtkSlicerPivotCalibrationLogic();
-  virtual ~vtkSlicerPivotCalibrationLogic();
+  vtkSlicerImagelessProbeCalibrationLogic();
+  virtual ~vtkSlicerImagelessProbeCalibrationLogic();
   
   virtual void SetMRMLSceneInternal(vtkMRMLScene* newScene);
   /// Register MRML Node classes to Scene. Gets called automatically when the MRMLScene is attached to this logic class.
@@ -102,8 +102,8 @@ protected:
   
 private:
 
-  vtkSlicerPivotCalibrationLogic(const vtkSlicerPivotCalibrationLogic&); // Not implemented
-  void operator=(const vtkSlicerPivotCalibrationLogic&);               // Not implemented
+  vtkSlicerImagelessProbeCalibrationLogic(const vtkSlicerImagelessProbeCalibrationLogic&); // Not implemented
+  void operator=(const vtkSlicerImagelessProbeCalibrationLogic&);               // Not implemented
 };
 
 #endif

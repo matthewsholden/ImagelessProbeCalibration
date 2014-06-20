@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>qSlicerPivotCalibrationModule</class>
- <widget class="qSlicerWidget" name="qSlicerPivotCalibrationModule">
+ <class>qSlicerImagelessProbeCalibrationModule</class>
+ <widget class="qSlicerWidget" name="qSlicerImagelessProbeCalibrationModule">
   <property name="enabled">
    <bool>true</bool>
   </property>
@@ -486,7 +486,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>qSlicerPivotCalibrationModule</sender>
+   <sender>qSlicerImagelessProbeCalibrationModule</sender>
    <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
    <receiver>InputComboBox</receiver>
    <slot>setMRMLScene(vtkMRMLScene*)</slot>
@@ -502,7 +502,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>qSlicerPivotCalibrationModule</sender>
+   <sender>qSlicerImagelessProbeCalibrationModule</sender>
    <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
    <receiver>OutputComboBox</receiver>
    <slot>setMRMLScene(vtkMRMLScene*)</slot>

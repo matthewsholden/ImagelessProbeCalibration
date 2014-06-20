@@ -22,8 +22,8 @@
 #include <QTimer>
 
 // SlicerQt includes
-#include "qSlicerPivotCalibrationModuleWidget.h"
-#include "ui_qSlicerPivotCalibrationModule.h"
+#include "qSlicerImagelessProbeCalibrationModuleWidget.h"
+#include "ui_qSlicerImagelessProbeCalibrationModule.h"
 
 #include <vtkNew.h>
 #include <vtkCommand.h>
@@ -32,37 +32,37 @@
 
 //-----------------------------------------------------------------------------
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class qSlicerPivotCalibrationModuleWidgetPrivate: public Ui_qSlicerPivotCalibrationModule
+class qSlicerImagelessProbeCalibrationModuleWidgetPrivate: public Ui_qSlicerImagelessProbeCalibrationModule
 {
-  Q_DECLARE_PUBLIC( qSlicerPivotCalibrationModuleWidget );
+  Q_DECLARE_PUBLIC( qSlicerImagelessProbeCalibrationModuleWidget );
 protected:
-  qSlicerPivotCalibrationModuleWidget* const q_ptr;
+  qSlicerImagelessProbeCalibrationModuleWidget* const q_ptr;
 public:
-  qSlicerPivotCalibrationModuleWidgetPrivate( qSlicerPivotCalibrationModuleWidget& object );
-  vtkSlicerPivotCalibrationLogic* logic() const;
+  qSlicerImagelessProbeCalibrationModuleWidgetPrivate( qSlicerImagelessProbeCalibrationModuleWidget& object );
+  vtkSlicerImagelessProbeCalibrationLogic* logic() const;
 };
 
 //-----------------------------------------------------------------------------
-// qSlicerPivotCalibrationModuleWidgetPrivate methods
+// qSlicerImagelessProbeCalibrationModuleWidgetPrivate methods
 
 //-----------------------------------------------------------------------------
-qSlicerPivotCalibrationModuleWidgetPrivate::qSlicerPivotCalibrationModuleWidgetPrivate( qSlicerPivotCalibrationModuleWidget& object )
+qSlicerImagelessProbeCalibrationModuleWidgetPrivate::qSlicerImagelessProbeCalibrationModuleWidgetPrivate( qSlicerImagelessProbeCalibrationModuleWidget& object )
  : q_ptr( &object )
 {
 }
 
 
-vtkSlicerPivotCalibrationLogic* qSlicerPivotCalibrationModuleWidgetPrivate::logic() const
+vtkSlicerImagelessProbeCalibrationLogic* qSlicerImagelessProbeCalibrationModuleWidgetPrivate::logic() const
 {
-  Q_Q( const qSlicerPivotCalibrationModuleWidget );
-  return vtkSlicerPivotCalibrationLogic::SafeDownCast( q->logic() );
+  Q_Q( const qSlicerImagelessProbeCalibrationModuleWidget );
+  return vtkSlicerImagelessProbeCalibrationLogic::SafeDownCast( q->logic() );
 }
 
 
 //-----------------------------------------------------------------------------
-// qSlicerPivotCalibrationModuleWidget methods
+// qSlicerImagelessProbeCalibrationModuleWidget methods
 //-----------------------------------------------------------------------------
-qSlicerPivotCalibrationModuleWidget::qSlicerPivotCalibrationModuleWidget(QWidget* _parent) : Superclass( _parent ) , d_ptr( new qSlicerPivotCalibrationModuleWidgetPrivate(*this))
+qSlicerImagelessProbeCalibrationModuleWidget::qSlicerImagelessProbeCalibrationModuleWidget(QWidget* _parent) : Superclass( _parent ) , d_ptr( new qSlicerImagelessProbeCalibrationModuleWidgetPrivate(*this))
 {
   this->pivotDelayTimer = new QTimer();
   pivotDelayTimer->setSingleShot(false);
@@ -76,35 +76,35 @@ qSlicerPivotCalibrationModuleWidget::qSlicerPivotCalibrationModuleWidget(QWidget
 
   this->timerSetting = 5;
 
-  this->ActivePivot = vtkSlicerPivotCalibrationLogic::NO_PIVOT;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::NO_PIVOT;
 }
 
 //-----------------------------------------------------------------------------
-qSlicerPivotCalibrationModuleWidget::~qSlicerPivotCalibrationModuleWidget()
+qSlicerImagelessProbeCalibrationModuleWidget::~qSlicerImagelessProbeCalibrationModuleWidget()
 {
   delete this->pivotDelayTimer;
   delete this->pivotSamplingTimer;
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::enter()
+void qSlicerImagelessProbeCalibrationModuleWidget::enter()
 {
   this->Superclass::enter();
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::initializeObserver(vtkMRMLNode* node)
+void qSlicerImagelessProbeCalibrationModuleWidget::initializeObserver(vtkMRMLNode* node)
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
   
   d->logic()->ObserveTransformNode( node );
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::setup()
+void qSlicerImagelessProbeCalibrationModuleWidget::setup()
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
   d->setupUi(this);
   
 
@@ -131,68 +131,68 @@ void qSlicerPivotCalibrationModuleWidget::setup()
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onMarkedPivotAStart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onMarkedPivotAStart()
 {
-  this->ActivePivot = vtkSlicerPivotCalibrationLogic::MARKED_PIVOT_A;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::MARKED_PIVOT_A;
   this->onStartPivotPart();
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onMarkedPivotBStart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onMarkedPivotBStart()
 {
-  this->ActivePivot = vtkSlicerPivotCalibrationLogic::MARKED_PIVOT_B;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::MARKED_PIVOT_B;
   this->onStartPivotPart();
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onUnmarkedPivotAStart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onUnmarkedPivotAStart()
 {
-  this->ActivePivot = vtkSlicerPivotCalibrationLogic::UNMARKED_PIVOT_A;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_PIVOT_A;
   this->onStartPivotPart();
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onUnmarkedPivotBStart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onUnmarkedPivotBStart()
 {
-  this->ActivePivot = vtkSlicerPivotCalibrationLogic::UNMARKED_PIVOT_B;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_PIVOT_B;
   this->onStartPivotPart();
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onCalibrate()
+void qSlicerImagelessProbeCalibrationModuleWidget::onCalibrate()
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
 
   d->logic()->GetImageToProbeTransform( d->OutputComboBox->currentNode() );
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onExtentXChanged( int newExtentX )
+void qSlicerImagelessProbeCalibrationModuleWidget::onExtentXChanged( int newExtentX )
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
 
   d->logic()->ExtentX = newExtentX;
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onExtentYChanged( int newExtentY )
+void qSlicerImagelessProbeCalibrationModuleWidget::onExtentYChanged( int newExtentY )
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
 
   d->logic()->ExtentY = newExtentY;
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onDepthChanged( double newDepth )
+void qSlicerImagelessProbeCalibrationModuleWidget::onDepthChanged( double newDepth )
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
 
   d->logic()->Depth = newDepth;
 }
@@ -200,9 +200,9 @@ void qSlicerPivotCalibrationModuleWidget::onDepthChanged( double newDepth )
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onStartPivotPart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onStartPivotPart()
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
 
   this->pivotDelayCount = this->timerSetting;
   this->pivotSamplingCount = this->timerSetting;
@@ -217,9 +217,9 @@ void qSlicerPivotCalibrationModuleWidget::onStartPivotPart()
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onPivotDelayTimeout()
+void qSlicerImagelessProbeCalibrationModuleWidget::onPivotDelayTimeout()
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
 
   std::stringstream ss1;
   
@@ -242,9 +242,9 @@ void qSlicerPivotCalibrationModuleWidget::onPivotDelayTimeout()
 }
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onPivotSamplingTimeout()
+void qSlicerImagelessProbeCalibrationModuleWidget::onPivotSamplingTimeout()
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
   
   std::stringstream ss;
   
@@ -264,9 +264,9 @@ void qSlicerPivotCalibrationModuleWidget::onPivotSamplingTimeout()
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::onPivotStop()
+void qSlicerImagelessProbeCalibrationModuleWidget::onPivotStop()
 {
-  Q_D(qSlicerPivotCalibrationModuleWidget);
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
   
   d->logic()->RecordingState = false;
   double rmsError = d->logic()->AddPivot( this->ActivePivot );
@@ -274,41 +274,41 @@ void qSlicerPivotCalibrationModuleWidget::onPivotStop()
 
   if ( rmsError < 0 )
   {
-    this->ActivePivot = vtkSlicerPivotCalibrationLogic::NO_PIVOT;
+    this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::NO_PIVOT;
     return;
   }
 
-  if ( this->ActivePivot == vtkSlicerPivotCalibrationLogic::MARKED_PIVOT_A )
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::MARKED_PIVOT_A )
   {
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
     d->MarkedPivotALabel->setText( ss.str().c_str() );
   }
-  if ( this->ActivePivot == vtkSlicerPivotCalibrationLogic::MARKED_PIVOT_B )
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::MARKED_PIVOT_B )
   {
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
     d->MarkedPivotBLabel->setText( ss.str().c_str() );
   }
-  if ( this->ActivePivot == vtkSlicerPivotCalibrationLogic::UNMARKED_PIVOT_A )
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_PIVOT_A )
   {
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
     d->UnmarkedPivotALabel->setText( ss.str().c_str() );
   }
-  if ( this->ActivePivot == vtkSlicerPivotCalibrationLogic::UNMARKED_PIVOT_B )
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_PIVOT_B )
   {
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
     d->UnmarkedPivotBLabel->setText( ss.str().c_str() );
   }
 
-  this->ActivePivot = vtkSlicerPivotCalibrationLogic::NO_PIVOT;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::NO_PIVOT;
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerPivotCalibrationModuleWidget::setTimer(double time)
+void qSlicerImagelessProbeCalibrationModuleWidget::setTimer(double time)
 {
   this->timerSetting = (int)time;
 }

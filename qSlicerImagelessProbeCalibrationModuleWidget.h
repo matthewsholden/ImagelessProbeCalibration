@@ -15,33 +15,33 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerPivotCalibrationModuleWidget_h
-#define __qSlicerPivotCalibrationModuleWidget_h
+#ifndef __qSlicerImagelessProbeCalibrationModuleWidget_h
+#define __qSlicerImagelessProbeCalibrationModuleWidget_h
 
 // SlicerQt includes
 #include "qSlicerAbstractModuleWidget.h"
-#include "vtkSlicerPivotCalibrationLogic.h"
+#include "vtkSlicerImagelessProbeCalibrationLogic.h"
 
 #include <QTimer>
 
 #include <vtkMRMLNode.h>
 
-#include "qSlicerPivotCalibrationModuleExport.h"
+#include "qSlicerImagelessProbeCalibrationModuleExport.h"
 
-class qSlicerPivotCalibrationModuleWidgetPrivate;
+class qSlicerImagelessProbeCalibrationModuleWidgetPrivate;
 class vtkAddSampleCallback;
 class vtkMRMLNode;
 
 /// \ingroup Slicer_QtModules_ExtensionTemplate
-class Q_SLICER_QTMODULES_PIVOTCALIBRATION_EXPORT qSlicerPivotCalibrationModuleWidget :
+class Q_SLICER_QTMODULES_IMAGELESSPROBECALIBRATION_EXPORT qSlicerImagelessProbeCalibrationModuleWidget :
   public qSlicerAbstractModuleWidget
 {
   Q_OBJECT
 
 public:
   typedef qSlicerAbstractModuleWidget Superclass;
-  qSlicerPivotCalibrationModuleWidget(QWidget *parent=0);
-  virtual ~qSlicerPivotCalibrationModuleWidget();
+  qSlicerImagelessProbeCalibrationModuleWidget(QWidget *parent=0);
+  virtual ~qSlicerImagelessProbeCalibrationModuleWidget();
   
   virtual void enter();
 
@@ -66,7 +66,7 @@ protected slots:
   void onPivotSamplingTimeout();
   
 protected:
-  QScopedPointer<qSlicerPivotCalibrationModuleWidgetPrivate> d_ptr;
+  QScopedPointer<qSlicerImagelessProbeCalibrationModuleWidgetPrivate> d_ptr;
 
   virtual void setup();
   
@@ -78,12 +78,12 @@ protected:
   QTimer* pivotSamplingTimer;
   int pivotSamplingCount;
 
-  vtkSlicerPivotCalibrationLogic::PivotEnumeration ActivePivot;
+  vtkSlicerImagelessProbeCalibrationLogic::PivotEnumeration ActivePivot;
 
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerPivotCalibrationModuleWidget);
-  Q_DISABLE_COPY(qSlicerPivotCalibrationModuleWidget);
+  Q_DECLARE_PRIVATE(qSlicerImagelessProbeCalibrationModuleWidget);
+  Q_DISABLE_COPY(qSlicerImagelessProbeCalibrationModuleWidget);
 };
 
 #endif
