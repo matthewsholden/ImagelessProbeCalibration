@@ -50,10 +50,10 @@ protected slots:
   void onStartPivotPart();
   void onPivotStop();
 
-  void onMarkedPivotAStart();
-  void onMarkedPivotBStart();
-  void onUnmarkedPivotAStart();
-  void onUnmarkedPivotBStart();
+  void onMarkedSuperiorPivotStart();
+  void onMarkedInferiorPivotStart();
+  void onUnmarkedSuperiorPivotStart();
+  void onUnmarkedInferiorPivotStart();
 
   void onCalibrate();
   

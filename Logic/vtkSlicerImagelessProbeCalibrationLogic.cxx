@@ -55,10 +55,10 @@ vtkSlicerImagelessProbeCalibrationLogic::vtkSlicerImagelessProbeCalibrationLogic
   this->ExtentY = 512;
   this->Depth = 50.0;
 
-  this->MarkedPivotA = vnl_vector< double >( 3 );
-  this->MarkedPivotB = vnl_vector< double >( 3 );
-  this->UnmarkedPivotA = vnl_vector< double >( 3 );
-  this->UnmarkedPivotB = vnl_vector< double >( 3 );
+  this->MarkedSuperiorPivot = vnl_vector< double >( 3 );
+  this->MarkedInferiorPivot = vnl_vector< double >( 3 );
+  this->UnmarkedSuperiorPivot = vnl_vector< double >( 3 );
+  this->UnmarkedInferiorPivot = vnl_vector< double >( 3 );
 
   this->ImageToProbeTransform = vtkSmartPointer< vtkLandmarkTransform >::New();
 }
@@ -221,25 +221,29 @@ double vtkSlicerImagelessProbeCalibrationLogic::ComputePivotPoint( vnl_vector< d
 // Return true if the calibration is complete and ImageToProbe transform is available (otherwise return false)
 double vtkSlicerImagelessProbeCalibrationLogic::AddPivot( PivotEnumeration pivot )
 {
-  if ( pivot == this->UNMARKED_PIVOT_B )
+  if ( pivot == this->MARKED_SUPERIOR_PIVOT )
   {
-    return this->ComputePivotPoint( &( this->UnmarkedPivotB ) );
+    return this->ComputePivotPoint( &( this->MarkedSuperiorPivot ) );
+  }
+  
+  if ( pivot == this->MARKED_INFERIOR_PIVOT )
+  {
+    return this->ComputePivotPoint( &( this->MarkedInferiorPivot ) );
+  }
+  
+  if ( pivot == this->UNMARKED_SUPERIOR_PIVOT )
+  {
+    return this->ComputePivotPoint( &( this->UnmarkedSuperiorPivot ) );
+  }
+  
+  if ( pivot == this->UNMARKED_INFERIOR_PIVOT )
+  {
+    return this->ComputePivotPoint( &( this->UnmarkedInferiorPivot ) );
   }
 
-  if ( pivot == this->UNMARKED_PIVOT_A )
-  {
-    return this->ComputePivotPoint( &( this->UnmarkedPivotA ) );
-  }
 
-  if ( pivot == this->MARKED_PIVOT_B )
-  {
-    return this->ComputePivotPoint( &( this->MarkedPivotB ) );
-  }
 
-  if ( pivot == this->MARKED_PIVOT_A )
-  {
-    return this->ComputePivotPoint( &( this->MarkedPivotA ) );
-  }
+
 
   return -1;
 }
@@ -254,14 +258,14 @@ void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
 
   // Compute the marked and unmarked middle points
   vnl_vector< double > markedMiddle( 3 );
-  markedMiddle.put( 0, ( this->MarkedPivotA.get( 0 ) + this->MarkedPivotB.get( 0 ) ) / 2 );
-  markedMiddle.put( 1, ( this->MarkedPivotA.get( 1 ) + this->MarkedPivotB.get( 1 ) ) / 2 );
-  markedMiddle.put( 2, ( this->MarkedPivotA.get( 2 ) + this->MarkedPivotB.get( 2 ) ) / 2 );
+  markedMiddle.put( 0, ( this->MarkedSuperiorPivot.get( 0 ) + this->MarkedInferiorPivot.get( 0 ) ) / 2 );
+  markedMiddle.put( 1, ( this->MarkedSuperiorPivot.get( 1 ) + this->MarkedInferiorPivot.get( 1 ) ) / 2 );
+  markedMiddle.put( 2, ( this->MarkedSuperiorPivot.get( 2 ) + this->MarkedInferiorPivot.get( 2 ) ) / 2 );
 
   vnl_vector< double > unmarkedMiddle( 3 );
-  unmarkedMiddle.put( 0, ( this->UnmarkedPivotA.get( 0 ) + this->UnmarkedPivotB.get( 0 ) ) / 2 );
-  unmarkedMiddle.put( 1, ( this->UnmarkedPivotA.get( 1 ) + this->UnmarkedPivotB.get( 1 ) ) / 2 );
-  unmarkedMiddle.put( 2, ( this->UnmarkedPivotA.get( 2 ) + this->UnmarkedPivotB.get( 2 ) ) / 2 );
+  unmarkedMiddle.put( 0, ( this->UnmarkedSuperiorPivot.get( 0 ) + this->UnmarkedInferiorPivot.get( 0 ) ) / 2 );
+  unmarkedMiddle.put( 1, ( this->UnmarkedSuperiorPivot.get( 1 ) + this->UnmarkedInferiorPivot.get( 1 ) ) / 2 );
+  unmarkedMiddle.put( 2, ( this->UnmarkedSuperiorPivot.get( 2 ) + this->UnmarkedInferiorPivot.get( 2 ) ) / 2 );
 
   // Compute the "far" vector by cross product
   vnl_vector< double > farVector = vnl_cross_3d( unmarkedMiddle - markedMiddle, imagePlaneNormal );
@@ -313,9 +317,9 @@ void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
 //---------------------------------------------------------------------------
 void vtkSlicerImagelessProbeCalibrationLogic::ComputeImagePlaneNormal( vnl_vector< double >* normal )
 {
-  normal->put( 0, ( ( this->MarkedPivotA.get( 0 ) - this->MarkedPivotB.get( 0 ) ) + ( this->UnmarkedPivotA.get( 0 ) - this->UnmarkedPivotB.get( 0 ) ) ) / 2 );
-  normal->put( 1, ( ( this->MarkedPivotA.get( 1 ) - this->MarkedPivotB.get( 1 ) ) + ( this->UnmarkedPivotA.get( 1 ) - this->UnmarkedPivotB.get( 1 ) ) ) / 2 );
-  normal->put( 2, ( ( this->MarkedPivotA.get( 2 ) - this->MarkedPivotB.get( 2 ) ) + ( this->UnmarkedPivotA.get( 2 ) - this->UnmarkedPivotB.get( 2 ) ) ) / 2 );
+  normal->put( 0, ( ( this->MarkedSuperiorPivot.get( 0 ) - this->MarkedInferiorPivot.get( 0 ) ) + ( this->UnmarkedSuperiorPivot.get( 0 ) - this->UnmarkedInferiorPivot.get( 0 ) ) ) / 2 );
+  normal->put( 1, ( ( this->MarkedSuperiorPivot.get( 1 ) - this->MarkedInferiorPivot.get( 1 ) ) + ( this->UnmarkedSuperiorPivot.get( 1 ) - this->UnmarkedInferiorPivot.get( 1 ) ) ) / 2 );
+  normal->put( 2, ( ( this->MarkedSuperiorPivot.get( 2 ) - this->MarkedInferiorPivot.get( 2 ) ) + ( this->UnmarkedSuperiorPivot.get( 2 ) - this->UnmarkedInferiorPivot.get( 2 ) ) ) / 2 );
 
   (*normal) = (*normal) / normal->two_norm();
 }

@@ -113,7 +113,7 @@
          <number>0</number>
         </property>
         <item row="0" column="1">
-         <widget class="QPushButton" name="MarkedPivotAButton">
+         <widget class="QPushButton" name="MarkedSuperiorPivotButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -121,12 +121,12 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Marked Pivot A Calibration</string>
+           <string>Marked Superior Pivot Calibration</string>
           </property>
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QLabel" name="MarkedPivotALabel">
+         <widget class="QLabel" name="MarkedSuperiorPivotLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -139,7 +139,7 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QPushButton" name="MarkedPivotBButton">
+         <widget class="QPushButton" name="MarkedInferiorPivotButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -147,12 +147,12 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Marked Pivot B Calibration</string>
+           <string>Marked Inferior Pivot Calibration</string>
           </property>
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QPushButton" name="UnmarkedPivotAButton">
+         <widget class="QPushButton" name="UnmarkedSuperiorPivotButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -160,12 +160,12 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Unmarked Pivot A Calibration</string>
+           <string>Unmarked Superior Pivot Calibration</string>
           </property>
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QPushButton" name="UnmarkedPivotBButton">
+         <widget class="QPushButton" name="UnmarkedInferiorPivotButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -173,12 +173,12 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Unmarked Pivot B Calibration</string>
+           <string>Unmarked Inferior Pivot Calibration</string>
           </property>
          </widget>
         </item>
         <item row="1" column="2">
-         <widget class="QLabel" name="MarkedPivotBLabel">
+         <widget class="QLabel" name="MarkedInferiorPivotLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -191,7 +191,7 @@
          </widget>
         </item>
         <item row="2" column="2">
-         <widget class="QLabel" name="UnmarkedPivotALabel">
+         <widget class="QLabel" name="UnmarkedSuperiorPivotLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -204,7 +204,7 @@
          </widget>
         </item>
         <item row="3" column="2">
-         <widget class="QLabel" name="UnmarkedPivotBLabel">
+         <widget class="QLabel" name="UnmarkedInferiorPivotLabel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>

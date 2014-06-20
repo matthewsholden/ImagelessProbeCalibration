@@ -47,7 +47,7 @@ class VTK_SLICER_IMAGELESSPROBECALIBRATION_MODULE_LOGIC_EXPORT vtkSlicerImageles
 {
 public:
 
-  enum PivotEnumeration { NO_PIVOT, MARKED_PIVOT_A, MARKED_PIVOT_B, UNMARKED_PIVOT_A, UNMARKED_PIVOT_B };
+  enum PivotEnumeration { NO_PIVOT, MARKED_SUPERIOR_PIVOT, MARKED_INFERIOR_PIVOT, UNMARKED_SUPERIOR_PIVOT, UNMARKED_INFERIOR_PIVOT };
 
   static vtkSlicerImagelessProbeCalibrationLogic *New();
   vtkTypeMacro(vtkSlicerImagelessProbeCalibrationLogic, vtkSlicerModuleLogic);
@@ -68,10 +68,10 @@ public:
   void ProcessMRMLNodesEvents( vtkObject* caller, unsigned long event, void* callData );
   
   //Move to protected, add accessors
-  vnl_vector< double > MarkedPivotA;
-  vnl_vector< double > MarkedPivotB;
-  vnl_vector< double > UnmarkedPivotA;
-  vnl_vector< double > UnmarkedPivotB;
+  vnl_vector< double > MarkedSuperiorPivot;
+  vnl_vector< double > MarkedInferiorPivot;
+  vnl_vector< double > UnmarkedSuperiorPivot;
+  vnl_vector< double > UnmarkedInferiorPivot;
 
   bool RecordingState;
 

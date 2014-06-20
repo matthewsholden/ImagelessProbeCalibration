@@ -115,10 +115,10 @@ void qSlicerImagelessProbeCalibrationModuleWidget::setup()
   
   connect( d->InputComboBox, SIGNAL( currentNodeChanged( vtkMRMLNode* ) ), this, SLOT( initializeObserver( vtkMRMLNode* ) ) );
   
-  connect( d->MarkedPivotAButton, SIGNAL( clicked() ), this, SLOT( onMarkedPivotAStart() ) );
-  connect( d->MarkedPivotBButton, SIGNAL( clicked() ), this, SLOT( onMarkedPivotBStart() ) );
-  connect( d->UnmarkedPivotAButton, SIGNAL( clicked() ), this, SLOT( onUnmarkedPivotAStart() ) );
-  connect( d->UnmarkedPivotBButton, SIGNAL( clicked() ), this, SLOT( onUnmarkedPivotBStart() ) );
+  connect( d->MarkedSuperiorPivotButton, SIGNAL( clicked() ), this, SLOT( onMarkedSuperiorPivotStart() ) );
+  connect( d->MarkedInferiorPivotButton, SIGNAL( clicked() ), this, SLOT( onMarkedInferiorPivotStart() ) );
+  connect( d->UnmarkedSuperiorPivotButton, SIGNAL( clicked() ), this, SLOT( onUnmarkedSuperiorPivotStart() ) );
+  connect( d->UnmarkedInferiorPivotButton, SIGNAL( clicked() ), this, SLOT( onUnmarkedInferiorPivotStart() ) );
 
   connect( d->CalibrateButton, SIGNAL( clicked() ), this, SLOT( onCalibrate() ) );
    
@@ -131,33 +131,33 @@ void qSlicerImagelessProbeCalibrationModuleWidget::setup()
 
 
 //-----------------------------------------------------------------------------
-void qSlicerImagelessProbeCalibrationModuleWidget::onMarkedPivotAStart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onMarkedSuperiorPivotStart()
 {
-  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::MARKED_PIVOT_A;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::MARKED_SUPERIOR_PIVOT;
   this->onStartPivotPart();
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerImagelessProbeCalibrationModuleWidget::onMarkedPivotBStart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onMarkedInferiorPivotStart()
 {
-  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::MARKED_PIVOT_B;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::MARKED_INFERIOR_PIVOT;
   this->onStartPivotPart();
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerImagelessProbeCalibrationModuleWidget::onUnmarkedPivotAStart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onUnmarkedSuperiorPivotStart()
 {
-  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_PIVOT_A;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_SUPERIOR_PIVOT;
   this->onStartPivotPart();
 }
 
 
 //-----------------------------------------------------------------------------
-void qSlicerImagelessProbeCalibrationModuleWidget::onUnmarkedPivotBStart()
+void qSlicerImagelessProbeCalibrationModuleWidget::onUnmarkedInferiorPivotStart()
 {
-  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_PIVOT_B;
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_INFERIOR_PIVOT;
   this->onStartPivotPart();
 }
 
@@ -278,29 +278,29 @@ void qSlicerImagelessProbeCalibrationModuleWidget::onPivotStop()
     return;
   }
 
-  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::MARKED_PIVOT_A )
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::MARKED_SUPERIOR_PIVOT )
   {
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
-    d->MarkedPivotALabel->setText( ss.str().c_str() );
+    d->MarkedSuperiorPivotLabel->setText( ss.str().c_str() );
   }
-  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::MARKED_PIVOT_B )
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::MARKED_INFERIOR_PIVOT )
   {
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
-    d->MarkedPivotBLabel->setText( ss.str().c_str() );
+    d->MarkedInferiorPivotLabel->setText( ss.str().c_str() );
   }
-  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_PIVOT_A )
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_SUPERIOR_PIVOT )
   {
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
-    d->UnmarkedPivotALabel->setText( ss.str().c_str() );
+    d->UnmarkedSuperiorPivotLabel->setText( ss.str().c_str() );
   }
-  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_PIVOT_B )
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_INFERIOR_PIVOT )
   {
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
-    d->UnmarkedPivotBLabel->setText( ss.str().c_str() );
+    d->UnmarkedInferiorPivotLabel->setText( ss.str().c_str() );
   }
 
   this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::NO_PIVOT;
