@@ -119,6 +119,7 @@ void qSlicerImagelessProbeCalibrationModuleWidget::setup()
   connect( d->MarkedInferiorPivotButton, SIGNAL( clicked() ), this, SLOT( onMarkedInferiorPivotStart() ) );
   connect( d->UnmarkedSuperiorPivotButton, SIGNAL( clicked() ), this, SLOT( onUnmarkedSuperiorPivotStart() ) );
   connect( d->UnmarkedInferiorPivotButton, SIGNAL( clicked() ), this, SLOT( onUnmarkedInferiorPivotStart() ) );
+  connect( d->ImagePlaneSlidingButton, SIGNAL( clicked() ), this, SLOT( onImagePlaneSlidingStart() ) );
 
   connect( d->CalibrateButton, SIGNAL( clicked() ), this, SLOT( onCalibrate() ) );
    
@@ -158,6 +159,14 @@ void qSlicerImagelessProbeCalibrationModuleWidget::onUnmarkedSuperiorPivotStart(
 void qSlicerImagelessProbeCalibrationModuleWidget::onUnmarkedInferiorPivotStart()
 {
   this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::UNMARKED_INFERIOR_PIVOT;
+  this->onStartPivotPart();
+}
+
+
+//-----------------------------------------------------------------------------
+void qSlicerImagelessProbeCalibrationModuleWidget::onImagePlaneSlidingStart()
+{
+  this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::IMAGE_PLANE_SLIDING;
   this->onStartPivotPart();
 }
 
@@ -301,6 +310,12 @@ void qSlicerImagelessProbeCalibrationModuleWidget::onPivotStop()
     std::stringstream ss;
     ss << "Complete! (RMS Error: " << rmsError << ")";
     d->UnmarkedInferiorPivotLabel->setText( ss.str().c_str() );
+  }
+  if ( this->ActivePivot == vtkSlicerImagelessProbeCalibrationLogic::IMAGE_PLANE_SLIDING )
+  {
+    std::stringstream ss;
+    ss << "Complete! (RMS Error: " << rmsError << ")";
+    d->ImagePlaneSlidingLabel->setText( ss.str().c_str() );
   }
 
   this->ActivePivot = vtkSlicerImagelessProbeCalibrationLogic::NO_PIVOT;

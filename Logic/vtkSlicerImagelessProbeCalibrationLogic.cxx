@@ -59,6 +59,7 @@ vtkSlicerImagelessProbeCalibrationLogic::vtkSlicerImagelessProbeCalibrationLogic
   this->MarkedInferiorPivot = vnl_vector< double >( 3 );
   this->UnmarkedSuperiorPivot = vnl_vector< double >( 3 );
   this->UnmarkedInferiorPivot = vnl_vector< double >( 3 );
+  this->ImagePlaneNormal = vnl_vector< double >( 3 );
 
   this->ImageToProbeTransform = vtkSmartPointer< vtkLandmarkTransform >::New();
 }
@@ -141,10 +142,6 @@ void vtkSlicerImagelessProbeCalibrationLogic::ClearSamples()
 //---------------------------------------------------------------------------
 double vtkSlicerImagelessProbeCalibrationLogic::ComputePivotPoint( vnl_vector< double >* pivot )
 {
-  if (this->CollectedTransforms.size() == 0)
-  {
-    return -1;
-  }
 
   /* Experimenting
   // Solve [ 2x 2y 2z 1 ] * [ a; b; c; d ] = [ x^2 + y^2 + z^2 ]
@@ -221,6 +218,11 @@ double vtkSlicerImagelessProbeCalibrationLogic::ComputePivotPoint( vnl_vector< d
 // Return true if the calibration is complete and ImageToProbe transform is available (otherwise return false)
 double vtkSlicerImagelessProbeCalibrationLogic::AddPivot( PivotEnumeration pivot )
 {
+  if (this->CollectedTransforms.size() == 0)
+  {
+    return -1;
+  }
+
   if ( pivot == this->MARKED_SUPERIOR_PIVOT )
   {
     return this->ComputePivotPoint( &( this->MarkedSuperiorPivot ) );
@@ -241,9 +243,11 @@ double vtkSlicerImagelessProbeCalibrationLogic::AddPivot( PivotEnumeration pivot
     return this->ComputePivotPoint( &( this->UnmarkedInferiorPivot ) );
   }
 
-
-
-
+  if ( pivot == this->IMAGE_PLANE_SLIDING )
+  {
+    this->ComputeImagePlaneNormalBySliding();
+    return 0;
+  }
 
   return -1;
 }
@@ -253,8 +257,10 @@ double vtkSlicerImagelessProbeCalibrationLogic::AddPivot( PivotEnumeration pivot
 void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
 {
   // First, find the image plane
-  vnl_vector<double> imagePlaneNormal( 3 );
-  this->ComputeImagePlaneNormal( &imagePlaneNormal );
+  if ( this->ImagePlaneNormal.two_norm() == 0 )
+  {
+    this->ComputeImagePlaneNormalByPivots();
+  }
 
   // Compute the marked and unmarked middle points
   vnl_vector< double > markedMiddle( 3 );
@@ -268,7 +274,7 @@ void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
   unmarkedMiddle.put( 2, ( this->UnmarkedSuperiorPivot.get( 2 ) + this->UnmarkedInferiorPivot.get( 2 ) ) / 2 );
 
   // Compute the "far" vector by cross product
-  vnl_vector< double > farVector = vnl_cross_3d( unmarkedMiddle - markedMiddle, imagePlaneNormal );
+  vnl_vector< double > farVector = vnl_cross_3d( unmarkedMiddle - markedMiddle, this->ImagePlaneNormal );
   farVector = farVector / farVector.two_norm();
 
   // TODO: Check the "far" vector is in the correct direction - opposite of the origin of the probe coordinate system
@@ -315,14 +321,92 @@ void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
 
 
 //---------------------------------------------------------------------------
-void vtkSlicerImagelessProbeCalibrationLogic::ComputeImagePlaneNormal( vnl_vector< double >* normal )
+void vtkSlicerImagelessProbeCalibrationLogic::ComputeImagePlaneNormalByPivots()
 {
-  normal->put( 0, ( ( this->MarkedSuperiorPivot.get( 0 ) - this->MarkedInferiorPivot.get( 0 ) ) + ( this->UnmarkedSuperiorPivot.get( 0 ) - this->UnmarkedInferiorPivot.get( 0 ) ) ) / 2 );
-  normal->put( 1, ( ( this->MarkedSuperiorPivot.get( 1 ) - this->MarkedInferiorPivot.get( 1 ) ) + ( this->UnmarkedSuperiorPivot.get( 1 ) - this->UnmarkedInferiorPivot.get( 1 ) ) ) / 2 );
-  normal->put( 2, ( ( this->MarkedSuperiorPivot.get( 2 ) - this->MarkedInferiorPivot.get( 2 ) ) + ( this->UnmarkedSuperiorPivot.get( 2 ) - this->UnmarkedInferiorPivot.get( 2 ) ) ) / 2 );
+  this->ImagePlaneNormal.put( 0, ( ( this->MarkedSuperiorPivot.get( 0 ) - this->MarkedInferiorPivot.get( 0 ) ) + ( this->UnmarkedSuperiorPivot.get( 0 ) - this->UnmarkedInferiorPivot.get( 0 ) ) ) / 2 );
+  this->ImagePlaneNormal.put( 1, ( ( this->MarkedSuperiorPivot.get( 1 ) - this->MarkedInferiorPivot.get( 1 ) ) + ( this->UnmarkedSuperiorPivot.get( 1 ) - this->UnmarkedInferiorPivot.get( 1 ) ) ) / 2 );
+  this->ImagePlaneNormal.put( 2, ( ( this->MarkedSuperiorPivot.get( 2 ) - this->MarkedInferiorPivot.get( 2 ) ) + ( this->UnmarkedSuperiorPivot.get( 2 ) - this->UnmarkedInferiorPivot.get( 2 ) ) ) / 2 );
 
-  (*normal) = (*normal) / normal->two_norm();
+  this->ImagePlaneNormal = this->ImagePlaneNormal / this->ImagePlaneNormal.two_norm();
 }
+
+
+//---------------------------------------------------------------------------
+void vtkSlicerImagelessProbeCalibrationLogic::ComputeImagePlaneNormalBySliding()
+{
+  // Add all the points into a matrix
+  vnl_matrix< double > slidingMatrix( this->CollectedTransforms.size(), 3, 0.0 );  
+  for ( int i = 0; i < this->CollectedTransforms.size(); i++ )
+  {
+    slidingMatrix.put( i, 0, this->CollectedTransforms.at( i )->GetElement( 0, 3 ) );
+    slidingMatrix.put( i, 1, this->CollectedTransforms.at( i )->GetElement( 1, 3 ) );
+    slidingMatrix.put( i, 2, this->CollectedTransforms.at( i )->GetElement( 2, 3 ) );
+  }
+
+  // Calculate the mean of this
+  vnl_vector< double > meanSlidingPosition( 3, 0.0 );
+  for ( int i = 0; i < this->CollectedTransforms.size(); i++ )
+  {
+    meanSlidingPosition = meanSlidingPosition + slidingMatrix.get_row( i );
+  }
+  meanSlidingPosition = meanSlidingPosition / this->CollectedTransforms.size();
+
+  // Subtract the mean from the sliding matrix
+  vnl_matrix< double > zeroMeanSlidingMatrix( this->CollectedTransforms.size(), 3 );  
+  for ( int i = 0; i < this->CollectedTransforms.size(); i++ )
+  {
+    zeroMeanSlidingMatrix.set_row( i, slidingMatrix.get_row( i ) - meanSlidingPosition );
+  }
+
+  // Calculate the covariance matrix
+  vnl_matrix< double > cov( 3, 3, 0.0 );
+  cov = zeroMeanSlidingMatrix.transpose() * zeroMeanSlidingMatrix;
+
+  // Find the eigenvalues of the covariance matrix
+  // The eigenvector of the smallest eigenvalue is the normal of the plane (since eigenvalue of a symmetry matrix are orthogonal)
+  vnl_matrix<double> eigenvectors( 3, 3, 0.0 );
+  vnl_vector<double> eigenvalues( 3, 0.0 );
+  vnl_symmetric_eigensystem_compute( cov, eigenvectors, eigenvalues );
+
+  // Note: eigenvectors are ordered in increasing eigenvalue ( 0 = smallest, end = biggest )
+  vnl_vector< double > normal_Reference( 3, 0.0 );
+  normal_Reference.put( 0, eigenvectors.get( 0, 0 ) );
+  normal_Reference.put( 1, eigenvectors.get( 1, 0 ) );
+  normal_Reference.put( 2, eigenvectors.get( 2, 0 ) );
+
+  // Note: The last entry here is zero! This is required because it is a vector, not a point.
+  double arrayNormal_Reference[ 4 ] = { normal_Reference.get( 0 ), normal_Reference.get( 1 ), normal_Reference.get( 2 ), 0 };
+  double arrayNormal_Probe[ 4 ] = { 0, 0, 0, 0 };
+
+  // Now we need to get the normal in the probe coordinate system
+  // Convert the normal to probe using all ProbeToReference for the sliding and take the mean
+  vnl_matrix< double > normalTest_Probe( this->CollectedTransforms.size(), 3, 0.0 );
+  for ( int i = 0; i < this->CollectedTransforms.size(); i++ )
+  {
+    vtkSmartPointer< vtkMatrix4x4 > currentReferenceToProbeMatrix = vtkSmartPointer< vtkMatrix4x4 >::New();
+    currentReferenceToProbeMatrix->DeepCopy( this->CollectedTransforms.at( i ) );
+    currentReferenceToProbeMatrix->Invert();
+    currentReferenceToProbeMatrix->MultiplyPoint( arrayNormal_Reference, arrayNormal_Probe );
+
+    normalTest_Probe.put( i, 0, arrayNormal_Probe[ 0 ] );
+    normalTest_Probe.put( i, 1, arrayNormal_Probe[ 1 ] );
+    normalTest_Probe.put( i, 2, arrayNormal_Probe[ 2 ] );
+  }
+
+  // Calculate the mean of this
+  vnl_vector< double > normal_Probe( 3, 0.0 );
+  for ( int i = 0; i < this->CollectedTransforms.size(); i++ )
+  {
+    normal_Probe = normal_Probe + normalTest_Probe.get_row( i );
+  }
+  normal_Probe = normal_Probe / this->CollectedTransforms.size();
+
+  // Set the output
+  this->ImagePlaneNormal.put( 0, normal_Probe.get( 0 ) );
+  this->ImagePlaneNormal.put( 1, normal_Probe.get( 1 ) );
+  this->ImagePlaneNormal.put( 2, normal_Probe.get( 2 ) );
+}
+
 
 //---------------------------------------------------------------------------
 void vtkSlicerImagelessProbeCalibrationLogic::GetImageToProbeTransform( vtkMRMLNode* outputNode )

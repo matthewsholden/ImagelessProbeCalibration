@@ -54,6 +54,7 @@ protected slots:
   void onMarkedInferiorPivotStart();
   void onUnmarkedSuperiorPivotStart();
   void onUnmarkedInferiorPivotStart();
+  void onImagePlaneSlidingStart();
 
   void onCalibrate();
   

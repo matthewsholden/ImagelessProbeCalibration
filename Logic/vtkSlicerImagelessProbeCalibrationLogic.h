@@ -47,7 +47,7 @@ class VTK_SLICER_IMAGELESSPROBECALIBRATION_MODULE_LOGIC_EXPORT vtkSlicerImageles
 {
 public:
 
-  enum PivotEnumeration { NO_PIVOT, MARKED_SUPERIOR_PIVOT, MARKED_INFERIOR_PIVOT, UNMARKED_SUPERIOR_PIVOT, UNMARKED_INFERIOR_PIVOT };
+  enum PivotEnumeration { NO_PIVOT, MARKED_SUPERIOR_PIVOT, MARKED_INFERIOR_PIVOT, UNMARKED_SUPERIOR_PIVOT, UNMARKED_INFERIOR_PIVOT, IMAGE_PLANE_SLIDING };
 
   static vtkSlicerImagelessProbeCalibrationLogic *New();
   vtkTypeMacro(vtkSlicerImagelessProbeCalibrationLogic, vtkSlicerModuleLogic);
@@ -59,7 +59,8 @@ public:
   double AddPivot( PivotEnumeration pivot );
   double ComputePivotPoint( vnl_vector< double >* pivot );
   void ComputeImageToProbeTransform();
-  void ComputeImagePlaneNormal( vnl_vector< double >* normal );
+  void ComputeImagePlaneNormalByPivots();
+  void ComputeImagePlaneNormalBySliding();
 
   void GetImageToProbeTransform( vtkMRMLNode* outputNode );
 
@@ -72,6 +73,7 @@ public:
   vnl_vector< double > MarkedInferiorPivot;
   vnl_vector< double > UnmarkedSuperiorPivot;
   vnl_vector< double > UnmarkedInferiorPivot;
+  vnl_vector< double > ImagePlaneNormal;
 
   bool RecordingState;
 
