@@ -128,6 +128,8 @@ void qSlicerImagelessProbeCalibrationModuleWidget::setup()
   connect( d->ExtentXSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( onExtentXChanged( int ) ) );
   connect( d->ExtentYSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( onExtentYChanged( int ) ) );
   connect( d->DepthSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( onDepthChanged( double ) ) );
+  connect( d->RadiusOfCurvatureSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( onRadiusOfCurvatureChanged( double ) ) );
+  connect( d->LinearCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( onLinearChanged( int ) ) );
 }
 
 
@@ -176,7 +178,18 @@ void qSlicerImagelessProbeCalibrationModuleWidget::onCalibrate()
 {
   Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
 
+  // Artificially inflate the radius of curvature if we request linear
+  if ( d->LinearCheckBox->checkState() == Qt::Checked )
+  {
+    d->logic()->RadiusOfCurvature = 1e9;
+  }
+
   d->logic()->GetImageToProbeTransform( d->OutputComboBox->currentNode() );
+
+  if ( d->LinearCheckBox->checkState() == Qt::Checked )
+  {
+    d->logic()->RadiusOfCurvature = d->RadiusOfCurvatureSpinBox->value();
+  }
 }
 
 
@@ -206,6 +219,24 @@ void qSlicerImagelessProbeCalibrationModuleWidget::onDepthChanged( double newDep
   d->logic()->Depth = newDepth;
 }
 
+
+//-----------------------------------------------------------------------------
+void qSlicerImagelessProbeCalibrationModuleWidget::onRadiusOfCurvatureChanged( double newRadius )
+{
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
+
+  d->logic()->RadiusOfCurvature = newRadius;
+}
+
+
+//-----------------------------------------------------------------------------
+void qSlicerImagelessProbeCalibrationModuleWidget::onLinearChanged( int linearState )
+{
+  Q_D(qSlicerImagelessProbeCalibrationModuleWidget);
+
+  d->logic()->Linear = ( linearState == Qt::Checked );
+  d->RadiusOfCurvatureSpinBox->setEnabled( linearState == Qt::Unchecked );
+}
 
 
 //-----------------------------------------------------------------------------

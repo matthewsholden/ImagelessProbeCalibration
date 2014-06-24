@@ -33,9 +33,9 @@
        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
       </property>
       <item row="0" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="InputLabel">
         <property name="text">
-         <string>Input (StylusToReference)</string>
+         <string>Input (ProbeToReference)</string>
         </property>
        </widget>
       </item>
@@ -51,7 +51,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Output (StylusTipToStylus)</string>
+         <string>Output (ImageToProbe)</string>
         </property>
        </widget>
       </item>
@@ -321,6 +321,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="suffix">
+           <string>px</string>
+          </property>
           <property name="maximum">
            <number>10000</number>
           </property>
@@ -349,6 +352,9 @@
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string>px</string>
           </property>
           <property name="maximum">
            <number>10000</number>
@@ -394,6 +400,58 @@
           </property>
           <property name="value">
            <double>50.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="RadiusOfCurvatureLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Radius of Curvature</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="RadiusOfCurvatureSpinBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="suffix">
+           <string>mm</string>
+          </property>
+          <property name="maximum">
+           <double>1000.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>61.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="LinearCheckBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Linear</string>
           </property>
          </widget>
         </item>

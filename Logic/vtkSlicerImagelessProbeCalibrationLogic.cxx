@@ -55,6 +55,7 @@ vtkSlicerImagelessProbeCalibrationLogic::vtkSlicerImagelessProbeCalibrationLogic
   this->ExtentY = 512;
   this->Depth = 50.0;
   this->RadiusOfCurvature = 61;
+  this->Linear = false;
 
   this->MarkedSuperiorPivot = vnl_vector< double >( 3, 0.0 );
   this->MarkedInferiorPivot = vnl_vector< double >( 3, 0.0 );

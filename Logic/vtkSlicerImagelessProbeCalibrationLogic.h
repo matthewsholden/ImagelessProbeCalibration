@@ -80,6 +80,7 @@ public:
   int ExtentX, ExtentY;
   double Depth;
   double RadiusOfCurvature;
+  bool Linear;
 
   vtkSmartPointer< vtkLandmarkTransform > ImageToProbeTransform;
 

@@ -62,6 +62,8 @@ protected slots:
   void onExtentXChanged( int );
   void onExtentYChanged( int );
   void onDepthChanged( double );
+  void onRadiusOfCurvatureChanged( double );
+  void onLinearChanged( int );
   
   void onPivotDelayTimeout();
   void onPivotSamplingTimeout();
