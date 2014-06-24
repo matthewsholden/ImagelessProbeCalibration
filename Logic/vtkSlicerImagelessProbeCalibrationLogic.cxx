@@ -54,12 +54,13 @@ vtkSlicerImagelessProbeCalibrationLogic::vtkSlicerImagelessProbeCalibrationLogic
   this->ExtentX = 512;
   this->ExtentY = 512;
   this->Depth = 50.0;
+  this->RadiusOfCurvature = 61;
 
-  this->MarkedSuperiorPivot = vnl_vector< double >( 3 );
-  this->MarkedInferiorPivot = vnl_vector< double >( 3 );
-  this->UnmarkedSuperiorPivot = vnl_vector< double >( 3 );
-  this->UnmarkedInferiorPivot = vnl_vector< double >( 3 );
-  this->ImagePlaneNormal = vnl_vector< double >( 3 );
+  this->MarkedSuperiorPivot = vnl_vector< double >( 3, 0.0 );
+  this->MarkedInferiorPivot = vnl_vector< double >( 3, 0.0 );
+  this->UnmarkedSuperiorPivot = vnl_vector< double >( 3, 0.0 );
+  this->UnmarkedInferiorPivot = vnl_vector< double >( 3, 0.0 );
+  this->ImagePlaneNormal = vnl_vector< double >( 3, 0.0 );
 
   this->ImageToProbeTransform = vtkSmartPointer< vtkLandmarkTransform >::New();
 }
@@ -263,24 +264,76 @@ void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
   }
 
   // Compute the marked and unmarked middle points
-  vnl_vector< double > markedMiddle( 3 );
-  markedMiddle.put( 0, ( this->MarkedSuperiorPivot.get( 0 ) + this->MarkedInferiorPivot.get( 0 ) ) / 2 );
-  markedMiddle.put( 1, ( this->MarkedSuperiorPivot.get( 1 ) + this->MarkedInferiorPivot.get( 1 ) ) / 2 );
-  markedMiddle.put( 2, ( this->MarkedSuperiorPivot.get( 2 ) + this->MarkedInferiorPivot.get( 2 ) ) / 2 );
+  vnl_vector< double > markedMiddle_Probe( 3 );
+  markedMiddle_Probe.put( 0, ( this->MarkedSuperiorPivot.get( 0 ) + this->MarkedInferiorPivot.get( 0 ) ) / 2 );
+  markedMiddle_Probe.put( 1, ( this->MarkedSuperiorPivot.get( 1 ) + this->MarkedInferiorPivot.get( 1 ) ) / 2 );
+  markedMiddle_Probe.put( 2, ( this->MarkedSuperiorPivot.get( 2 ) + this->MarkedInferiorPivot.get( 2 ) ) / 2 );
 
-  vnl_vector< double > unmarkedMiddle( 3 );
-  unmarkedMiddle.put( 0, ( this->UnmarkedSuperiorPivot.get( 0 ) + this->UnmarkedInferiorPivot.get( 0 ) ) / 2 );
-  unmarkedMiddle.put( 1, ( this->UnmarkedSuperiorPivot.get( 1 ) + this->UnmarkedInferiorPivot.get( 1 ) ) / 2 );
-  unmarkedMiddle.put( 2, ( this->UnmarkedSuperiorPivot.get( 2 ) + this->UnmarkedInferiorPivot.get( 2 ) ) / 2 );
+  vnl_vector< double > unmarkedMiddle_Probe( 3 );
+  unmarkedMiddle_Probe.put( 0, ( this->UnmarkedSuperiorPivot.get( 0 ) + this->UnmarkedInferiorPivot.get( 0 ) ) / 2 );
+  unmarkedMiddle_Probe.put( 1, ( this->UnmarkedSuperiorPivot.get( 1 ) + this->UnmarkedInferiorPivot.get( 1 ) ) / 2 );
+  unmarkedMiddle_Probe.put( 2, ( this->UnmarkedSuperiorPivot.get( 2 ) + this->UnmarkedInferiorPivot.get( 2 ) ) / 2 );
+
+  // Find the transducer face "middle"
+  vnl_vector< double > faceMiddle_Probe( 3 );
+  faceMiddle_Probe.put( 0, ( markedMiddle_Probe.get( 0 ) + unmarkedMiddle_Probe.get( 0 ) ) / 2 );
+  faceMiddle_Probe.put( 1, ( markedMiddle_Probe.get( 1 ) + unmarkedMiddle_Probe.get( 1 ) ) / 2 );
+  faceMiddle_Probe.put( 2, ( markedMiddle_Probe.get( 2 ) + unmarkedMiddle_Probe.get( 2 ) ) / 2 );
 
   // Compute the "far" vector by cross product
-  vnl_vector< double > farVector = vnl_cross_3d( unmarkedMiddle - markedMiddle, this->ImagePlaneNormal );
-  farVector = farVector / farVector.two_norm();
+  vnl_vector< double > farVector_Probe = vnl_cross_3d( unmarkedMiddle_Probe - markedMiddle_Probe, this->ImagePlaneNormal );
+  farVector_Probe = farVector_Probe / farVector_Probe.two_norm();
+
+  vnl_vector< double > planeVector1 = farVector_Probe;
+  vnl_vector< double > planeVector2 = unmarkedMiddle_Probe - markedMiddle_Probe;
+  planeVector2 = planeVector2 / planeVector2.two_norm();
+
+  // Project the middle points onto the image plane
+  vnl_vector< double > markedMiddle_Plane( 2, 0.0 );
+  markedMiddle_Plane.put( 0, dot_product( markedMiddle_Probe - faceMiddle_Probe, planeVector1 ) );
+  markedMiddle_Plane.put( 1, dot_product( markedMiddle_Probe - faceMiddle_Probe, planeVector2 ) );
+
+  vnl_vector< double > unmarkedMiddle_Plane( 2, 0.0 );
+  unmarkedMiddle_Plane.put( 0, dot_product( unmarkedMiddle_Probe - faceMiddle_Probe, planeVector1 ) );
+  unmarkedMiddle_Plane.put( 1, dot_product( unmarkedMiddle_Probe - faceMiddle_Probe, planeVector2 ) );
+
+  vnl_vector< double > faceMiddle_Plane = ( markedMiddle_Plane + unmarkedMiddle_Plane ) / 2;
+
+  // Find the centre of the circle
+  vnl_vector< double > orthogonalVector_Plane( 2, 0.0 );
+  orthogonalVector_Plane.put( 0, markedMiddle_Plane.get( 1 ) - unmarkedMiddle_Plane.get( 1 ) );
+  orthogonalVector_Plane.put( 1, unmarkedMiddle_Plane.get( 0 ) - markedMiddle_Plane.get( 0 ) );
+  orthogonalVector_Plane = orthogonalVector_Plane / orthogonalVector_Plane.two_norm();
+
+  double orthogonalDistance = sqrt( this->RadiusOfCurvature * this->RadiusOfCurvature - ( markedMiddle_Plane - unmarkedMiddle_Plane ).two_norm() * ( markedMiddle_Plane - unmarkedMiddle_Plane ).two_norm() / 4 );
+
+  vnl_vector< double > circleCentre_Plane = orthogonalVector_Plane * orthogonalDistance;
+
+  double markedAngle_Plane = atan2( markedMiddle_Plane.get( 1 ) - circleCentre_Plane.get( 1 ), markedMiddle_Plane.get( 0 ) - circleCentre_Plane.get( 0 ) );
+  double unmarkedAngle_Plane = atan2( unmarkedMiddle_Plane.get( 1 ) - circleCentre_Plane.get( 1 ), unmarkedMiddle_Plane.get( 0 ) - circleCentre_Plane.get( 0 ) );
+  double totalCurveAngle = abs( markedAngle_Plane - unmarkedAngle_Plane );
+
+  // Unproject the circle's centre
+  vnl_vector< double > circleCentre_Probe = faceMiddle_Probe + circleCentre_Plane.get( 0 ) * planeVector1 + circleCentre_Plane.get( 1 ) * planeVector2;
+
+  // Calculate the far vectors for the marked and unmarked sides
+  vnl_vector< double > markedFarVector_Probe = ( markedMiddle_Probe - circleCentre_Probe );
+  markedFarVector_Probe = markedFarVector_Probe / markedFarVector_Probe.two_norm();
+  
+  vnl_vector< double > unmarkedFarVector_Probe = ( unmarkedMiddle_Probe - circleCentre_Probe );
+  unmarkedFarVector_Probe = unmarkedFarVector_Probe / unmarkedFarVector_Probe.two_norm();
+
+  // Calculate the proportion of image that the near x and far y points lie at
+  double totalXWidth_Probe = 2 * ( ( faceMiddle_Probe - markedMiddle_Probe ).two_norm() + this->Depth * cos( asin( 1.0 ) - totalCurveAngle / 2 ) );
+  double totalYHeight_Probe = this->RadiusOfCurvature - ( faceMiddle_Probe - circleCentre_Probe ).two_norm() + this->Depth;
+
+  double nearXProportion = ( unmarkedMiddle_Probe - markedMiddle_Probe ).two_norm() / ( 2 * totalXWidth_Probe );
+  double farYProportion = ( this->Depth * sin( asin( 1.0 ) - totalCurveAngle / 2 ) ) / totalYHeight_Probe;
 
   // TODO: Check the "far" vector is in the correct direction - opposite of the origin of the probe coordinate system
 
-  vnl_vector< double > markedFar = markedMiddle + farVector * this->Depth; // DEPTH
-  vnl_vector< double > unmarkedFar = unmarkedMiddle + farVector * this->Depth;
+  vnl_vector< double > markedFar_Probe = markedMiddle_Probe + markedFarVector_Probe * this->Depth; // DEPTH
+  vnl_vector< double > unmarkedFar_Probe = unmarkedMiddle_Probe + unmarkedFarVector_Probe * this->Depth;
 
   // A properly oriented image should look like
   // X = 0, Y = 0, UN    ========== X = xmax, Y = 0, MN
@@ -294,19 +347,19 @@ void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
   vtkSmartPointer< vtkPoints > imagePoints = vtkSmartPointer< vtkPoints >::New();
   vtkSmartPointer< vtkPoints > probePoints = vtkSmartPointer< vtkPoints >::New();
 
-  double imagePointUN[ 3 ] = { 0, 0, 0 }; // XMAX, YMAX
-  double imagePointMN[ 3 ] = { this->ExtentX, 0, 0 };
-  double imagePointUF[ 3 ] = { 0, this->ExtentY, 0 };
-  double imagePointMF[ 3 ] = { this->ExtentX, this->ExtentY, 0 };
+  double imagePointUN[ 3 ] = { this->ExtentX / 2 - this->ExtentX * nearXProportion, 0, 0 }; // XMAX, YMAX
+  double imagePointMN[ 3 ] = { this->ExtentX / 2 + this->ExtentX * nearXProportion, 0, 0 };
+  double imagePointUF[ 3 ] = { 0, this->ExtentY * farYProportion, 0 };
+  double imagePointMF[ 3 ] = { this->ExtentX, this->ExtentY * farYProportion, 0 };
   imagePoints->InsertNextPoint( imagePointUN );
   imagePoints->InsertNextPoint( imagePointMN );
   imagePoints->InsertNextPoint( imagePointUF );
   imagePoints->InsertNextPoint( imagePointMF );
 
-  double probePointUN[ 3 ] = { unmarkedMiddle.get( 0 ), unmarkedMiddle.get( 1 ), unmarkedMiddle.get( 2 ) };
-  double probePointMN[ 3 ] = { markedMiddle.get( 0 ), markedMiddle.get( 1 ), markedMiddle.get( 2 ) };
-  double probePointUF[ 3 ] = { unmarkedFar.get( 0 ), unmarkedFar.get( 1 ), unmarkedFar.get( 2 ) };
-  double probePointMF[ 3 ] = { markedFar.get( 0 ), markedFar.get( 1 ), markedFar.get( 2 ) };
+  double probePointUN[ 3 ] = { unmarkedMiddle_Probe.get( 0 ), unmarkedMiddle_Probe.get( 1 ), unmarkedMiddle_Probe.get( 2 ) };
+  double probePointMN[ 3 ] = { markedMiddle_Probe.get( 0 ), markedMiddle_Probe.get( 1 ), markedMiddle_Probe.get( 2 ) };
+  double probePointUF[ 3 ] = { unmarkedFar_Probe.get( 0 ), unmarkedFar_Probe.get( 1 ), unmarkedFar_Probe.get( 2 ) };
+  double probePointMF[ 3 ] = { markedFar_Probe.get( 0 ), markedFar_Probe.get( 1 ), markedFar_Probe.get( 2 ) };
   probePoints->InsertNextPoint( probePointUN );
   probePoints->InsertNextPoint( probePointMN );
   probePoints->InsertNextPoint( probePointUF );

@@ -127,7 +127,7 @@ void qSlicerImagelessProbeCalibrationModuleWidget::setup()
 
   connect( d->ExtentXSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( onExtentXChanged( int ) ) );
   connect( d->ExtentYSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( onExtentYChanged( int ) ) );
-  connect( d->DepthSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( onExtentYChanged( double ) ) );
+  connect( d->DepthSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( onDepthChanged( double ) ) );
 }
 
 
