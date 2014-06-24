@@ -285,6 +285,9 @@ void vtkSlicerImagelessProbeCalibrationLogic::ComputeImageToProbeTransform()
   vnl_vector< double > farVector_Probe = vnl_cross_3d( unmarkedMiddle_Probe - markedMiddle_Probe, this->ImagePlaneNormal );
   farVector_Probe = farVector_Probe / farVector_Probe.two_norm();
 
+  // Check the image plane is opposite the probe sensor
+  farVector_Probe = farVector_Probe * dot_product( farVector_Probe, faceMiddle_Probe ) / abs( dot_product( farVector_Probe, faceMiddle_Probe ) );
+
   vnl_vector< double > planeVector1 = farVector_Probe;
   vnl_vector< double > planeVector2 = unmarkedMiddle_Probe - markedMiddle_Probe;
   planeVector2 = planeVector2 / planeVector2.two_norm();
